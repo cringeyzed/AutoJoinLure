@@ -71,7 +71,7 @@ while inf == true do
         wait(0.01)
 	end
 	wait(50)
-	local speed = 12
+	local speed = 17
     local humanoid = p.Character:FindFirstChild("Humanoid")
     if humanoid then
         local rootPart = humanoid.RootPart
