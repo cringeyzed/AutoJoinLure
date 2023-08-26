@@ -17,14 +17,23 @@ while inf == true do
 	local tP3 = Vector3.new(2896.751953125, -984.6512451171875, 8521.1484375)
 	local spot = Vector3.new(2455, -938, 8520)
 	local bD = game.ReplicatedStorage.AssetsHiding.Dungeon.BossDoorModel
-	
 	if past == false then
     	p.Character.HumanoidRootPart.CFrame = CFrame.new(tP3)
-    	wait(2)
+    	if p.GameplayPaused then
+				p.GameplayPaused = false
+			end
+    	wait(3)
     	p.Character.HumanoidRootPart.CFrame = CFrame.new(tP3)
+    	if p.GameplayPaused then
+				p.GameplayPaused = false
+			end
+    	wait(3)
+    	p.Character.HumanoidRootPart.CFrame = CFrame.new(tP3)
+    	if p.GameplayPaused then
+				p.GameplayPaused = false
+			end
     	past = true
 	end
-	
     if game.Workspace:FindFirstChild("BossDoorModel") then
     	print("exists")
     else
@@ -35,17 +44,16 @@ while inf == true do
 		pP.MaxActivationDistance = 50
 		pP.HoldDuration = 0
     end
-    
     while inQ.Value == false do
    		if inQ.Value == true then
         	break
         end
         local cd1 = game.Workspace.BossDoorModel.Queue.Cooldown
+        wait(0.02)
 		cd1.Label:Destroy()
 		local cd2 = bD.Queue.Cooldown.Label:Clone()
 		cd2.Parent = cd1
-		
-		if cd1.Label.Text == "" or " " then
+		if cd2.Text ~= "In progress" or cd2.Text ~= "" or cd2.Text ~= " " then
 			p.Character.HumanoidRootPart.CFrame = CFrame.new(tP3)
 			local pP2 = bD.Queue.Attach.ProximityPrompt
 			fireproximityprompt(pP2, 1, true)
@@ -56,41 +64,34 @@ while inf == true do
 			list.MobName:Destroy()
 			local list2 = bD.Queue.NameTag.MobName:Clone()
 			list2.Parent = list
+			print("queue tp")
+		else
+			print("queue not available")
 		end
-
-		print("queue tp")
         wait(0.01)
 	end
-	
 	wait(50)
-	
 	local speed = 12
-
     local humanoid = p.Character:FindFirstChild("Humanoid")
     if humanoid then
         local rootPart = humanoid.RootPart
         local currentPosition = rootPart.Position
-
         local direction = (spot - currentPosition).unit
         local distance = (spot - currentPosition).Magnitude
-
         local tweenInfo = TweenInfo.new(
             distance / speed,
             Enum.EasingStyle.Linear,
             Enum.EasingDirection.Out
         )
-
         local tween = game:GetService("TweenService"):Create(
             rootPart,
             tweenInfo,
             {CFrame = CFrame.new(currentPosition + direction * distance)}
         )
-
         tween:Play()
         tween.Completed:Wait()
         inQ.Value = true
     end
-	
 	if inQ.Value == false then
 		inQ.Value = true
 	end
