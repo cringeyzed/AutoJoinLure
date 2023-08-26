@@ -1,0 +1,104 @@
+local inf = true
+local past = false
+while inf == true do
+	local p = game.Players.LocalPlayer
+	local inQ = p.Stats.InBossQueue
+	local tP3 = Vector3.new(2896.751953125, -984.6512451171875, 8521.1484375)
+	local spot = Vector3.new(2455, -938, 8520)
+	local bD = game.ReplicatedStorage.AssetsHiding.Dungeon.BossDoorModel
+	
+	if past == false then
+    	p.Character.HumanoidRootPart.CFrame = CFrame.new(tP3)
+    	wait(2)
+    	p.Character.HumanoidRootPart.CFrame = CFrame.new(tP3)
+    	past = true
+	end
+	
+    if game.Workspace:FindFirstChild("BossDoorModel") then
+    	print("exists")
+    else
+		local bD2 = bD:Clone()
+		local bQ = bD2.Queue
+		local pP = bQ.Attach.ProximityPrompt
+		bD2.Parent = game.Workspace
+		pP.MaxActivationDistance = 50
+		pP.HoldDuration = 0
+    end
+    
+    while inQ.Value == false do
+   		if inQ.Value == true then
+        	break
+        end
+        local cd1 = game.Workspace.BossDoorModel.Queue.Cooldown
+		cd1.Label:Destroy()
+		local cd2 = bD.Queue.Cooldown.Label:Clone()
+		cd2.Parent = cd1
+		
+		if cd1.Label.Text == "" or " " then
+			p.Character.HumanoidRootPart.CFrame = CFrame.new(tP3)
+			local pP2 = bD.Queue.Attach.ProximityPrompt
+			fireproximityprompt(pP2, 1, true)
+			if p.GameplayPaused then
+				p.GameplayPaused = false
+			end
+			local list = game.Workspace.BossDoorModel.Queue.NameTag
+			list.MobName:Destroy()
+			local list2 = bD.Queue.NameTag.MobName:Clone()
+			list2.Parent = list
+		end
+
+		print("queue tp")
+        wait(0.01)
+	end
+	
+	wait(50)
+	
+	local speed = 20
+
+    local humanoid = p.Character:FindFirstChild("Humanoid")
+    if humanoid then
+        local rootPart = humanoid.RootPart
+        local currentPosition = rootPart.Position
+
+        local direction = (spot - currentPosition).unit
+        local distance = (spot - currentPosition).Magnitude
+
+        local tweenInfo = TweenInfo.new(
+            distance / speed,
+            Enum.EasingStyle.Linear,
+            Enum.EasingDirection.Out
+        )
+
+        local tween = game:GetService("TweenService"):Create(
+            rootPart,
+            tweenInfo,
+            {CFrame = CFrame.new(currentPosition + direction * distance)}
+        )
+
+        tween:Play()
+        tween.Completed:Wait()
+        inQ.Value = true
+    end
+	
+	if inQ.Value == false then
+		inQ.Value = true
+	end
+	local prog = game.Workspace.BossDoorModel.Queue.Cooldown
+	while inQ.Value == true do
+        if prog.Label then
+        	prog.Label:Destroy()
+        	local cd2 = bD.Queue.Cooldown.Label:Clone()
+			cd2.Parent = prog
+        end
+        if prog.Label.Text == "In progress" then
+       		print("waiting for queue while luring sentinels")
+       		prog.Label:Destroy()
+        	local cd2 = bD.Queue.Cooldown.Label:Clone()
+			cd2.Parent = prog
+        	wait(0.01)
+        elseif prog.Label.Text == "" or " " then
+        	inQ.Value = false
+        	break
+        end
+	end
+end
