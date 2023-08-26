@@ -1,3 +1,14 @@
+-- ass game devs lmao, cant even avoid a simple script like this, pls keep not fixing bugs
+
+--anti afk
+local vU = game:service'VirtualUser'
+game:service'Players'.LocalPlayer.Idled:connect(function()
+	bb:CaptureController()
+	bb:ClickButton2(Vector2.new())
+	wait(2)
+end)
+
+--auto loop and lure
 local inf = true
 local past = false
 while inf == true do
@@ -53,7 +64,7 @@ while inf == true do
 	
 	wait(50)
 	
-	local speed = 20
+	local speed = 12
 
     local humanoid = p.Character:FindFirstChild("Humanoid")
     if humanoid then
